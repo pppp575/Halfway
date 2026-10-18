@@ -21,7 +21,7 @@
     "schedule": "node scripts/generate-schedule.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.117.2",
+    "@supabase/supabase-js": "2.118.0",
     "d3-drag": "3.0.0",
     "d3-ease": "3.0.1",
     "d3-geo": "3.1.1",
