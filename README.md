@@ -1,89 +1,55 @@
-# Halfway
+<p align="center">
+  <a href="https://pppp575.github.io/Halfway/"><img src="public/og-image.png" alt="Halfway: two cities, find the exact middle" width="760"></a>
+</p>
 
-**The daily geography game about meeting in the middle.**
+<h1 align="center">Halfway</h1>
 
-Every day you get five pairs of cities. Tap the exact halfway point between them along the shortest route, the way a plane flies. Because the Earth is round, the real middle is often far from where it looks on a flat map. After each round the map folds into a globe and a plane flies the route, so you can see why.
+<p align="center"><b>Two cities. One map. Find the exact middle.</b><br>A free daily geography game.</p>
 
-![Halfway social preview](public/og-image.png)
+<p align="center"><a href="https://pppp575.github.io/Halfway/"><b>▶ Play today’s Halfway</b></a></p>
 
-## Features
+---
 
-- **Five daily rounds**, the same for everyone, from a short hop to an ocean crossing. Two years of puzzles are already scheduled.
-- **Flat-to-globe reveal** with the true flight path, the flat-map trap and a plane flying the route.
-- **Live leaderboards**: today, all time, and private weekly **leagues** with invite links (needs Supabase).
-- **Crowd pins**: after each round, see where other players tapped and what share of them you beat.
-- **Server-side scoring**: the database scores every pin itself, so a modified client can’t post a made-up score.
-- **Archive** of every past day, unlimited **practice**, and **hard mode** (no city dots).
-- **Share** as text with emoji squares, or as a portrait **image** of the day’s routes and your rank.
-- **Ten badges**, streaks and stats, saved on the player’s device.
-- **Installable and offline-ready** (web app manifest and service worker), self-hosted fonts, light and dark themes, keyboard play.
-- **Optional AdSense slots** that switch on when you add your IDs.
+## How to play
 
-## Quick start
+1. Every day you get five pairs of cities, the same for everyone.
+2. Tap the spot exactly halfway between them along the shortest route, the way a plane flies.
+3. Lock in your pin and watch the map fold into a globe while a plane flies the route.
+4. Score up to 100 points a round, 500 a day, then share your result:
 
-You need [Node.js](https://nodejs.org) 22.12 or newer.
+```
+Halfway No. 12: 412/500 (#3 of 128)
+🟩🟨🟩🟧🟩
+```
+
+## Why it’s harder than it looks
+
+On a flat map, the straight line between two cities looks like the shortest way. It isn’t. The Earth is round, so the shortest route curves toward the pole, and the true middle is often hundreds or thousands of kilometres from where your eye expects it. Halfway between London and Tokyo isn’t over Iran or India. It’s in northern Siberia, near the city of Norilsk.
+
+## What’s inside
+
+- **A new puzzle every day**, from a short hop to an ocean crossing
+- **The globe reveal**: see the real flight path and the flat-map trap
+- **Live leaderboards** for today and all time
+- **Private leagues** for friends, family or coworkers, with a weekly table
+- **See where everyone else tapped** after each round
+- **Hard mode** with no city dots, an **archive** of past days and unlimited **practice**
+- **Badges, streaks and stats**, plus a share image made for social media
+- Works on phones and computers, can be installed like an app, and plays offline
+
+---
+
+## For developers
+
+Built with [Vite](https://vite.dev), [d3-geo](https://d3js.org/d3-geo) and [Supabase](https://supabase.com), and published to GitHub Pages on every push to `main`.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the address it prints. Without Supabase settings the game runs with local stats only, which is fine for development.
-
-To try the leaderboard locally, copy `.env.example` to `.env` and fill in your Supabase project URL and publishable key (see [docs/SUPABASE.md](docs/SUPABASE.md)).
-
-## Publishing
-
-1. Set up the database: [docs/SUPABASE.md](docs/SUPABASE.md).
-2. Put the code on GitHub and turn on GitHub Pages: [docs/DEPLOY.md](docs/DEPLOY.md).
-
-Every push to `main` then tests, builds and publishes the site automatically.
-
-## Before you launch
-
-- [ ] Set `LAUNCH_DATE` in `src/lib/constants.js` to your first day, run `npm run schedule`, and load the new `supabase/puzzles.sql`.
-- [ ] Fill in every `[bracketed]` item in `privacy.html` and have the page reviewed.
-- [ ] Decide on a license (see below).
-- [ ] Play a full day on your phone on the live site.
-- [ ] Optional: custom domain and AdSense ([docs/DEPLOY.md](docs/DEPLOY.md)).
-
-## Scripts
-
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Local development server |
-| `npm run build` | Production build into `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm test` | Unit tests (Vitest) |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier |
-| `npm run check` | Lint, formatting check and tests, as CI runs them |
-| `npm run schedule` | Extend the puzzle schedule and regenerate `supabase/puzzles.sql` |
-| `npm run countries` | Rebuild the world map data from `world-atlas` |
-
-## Project layout
-
-```
-index.html, privacy.html    Pages
-src/
-  main.js                   Entry point
-  game.js                   Game flow: rounds, results, end of day, archive, settings, sharing
-  styles.css                All styles; fonts in src/fonts
-  lib/                      Pure logic with unit tests: puzzles, scoring, geometry, dates, badges
-  ui/                       Map and globe, leaderboard, split-flap board, share image
-  services/                 Supabase client, ads
-  data/                     Cities, world map, puzzle schedule
-supabase/
-  schema.sql                Tables, security and API functions
-  puzzles.sql               Generated puzzle rows
-scripts/                    Data generators
-tests/                      Unit tests
-docs/                       Setup guides, architecture, roadmap
-.github/workflows/          CI and GitHub Pages deploy
-```
-
-How the pieces fit together is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Plans and premium ideas are in [docs/ROADMAP.md](docs/ROADMAP.md).
+Guides: [database setup](docs/SUPABASE.md), [publishing](docs/DEPLOY.md), [how it works](docs/ARCHITECTURE.md) and the [roadmap](docs/ROADMAP.md).
 
 ## License
 
-`LICENSE` currently says all rights reserved. Choose the license you want before you make the repository public, and get advice if you’re unsure what each option allows. Third-party code, data and fonts keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+All rights reserved. Third-party code, map data and fonts keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
