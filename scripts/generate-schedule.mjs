@@ -1,6 +1,7 @@
 // Extends src/data/schedule.json (the daily city pairs) and rewrites supabase/puzzles.sql.
-// Existing days are never changed, so past puzzles stay the same.
-// Usage: npm run schedule            (730 days from LAUNCH_DATE)
+// The schedule keeps its original start date and existing days are never changed,
+// so past puzzles stay the same. LAUNCH_DATE is only used when there is no schedule yet.
+// Usage: npm run schedule            (730 days from the schedule start)
 //        npm run schedule -- --days=1095
 import { readFile, writeFile } from 'node:fs/promises';
 import { CITIES } from '../src/data/cities.js';
@@ -15,16 +16,14 @@ const sqlUrl = new URL('../supabase/puzzles.sql', import.meta.url);
 
 let schedule = { start: LAUNCH_DATE, cities: CITIES.length, days: [] };
 try {
-  const existing = JSON.parse(await readFile(scheduleUrl, 'utf8'));
-  if (existing.start === LAUNCH_DATE) schedule = existing;
-  else console.warn(`LAUNCH_DATE changed (${existing.start} -> ${LAUNCH_DATE}); building a new schedule.`);
+  schedule = JSON.parse(await readFile(scheduleUrl, 'utf8'));
 } catch {
-  /* first run */
+  /* first run: start the schedule on LAUNCH_DATE */
 }
 
 const before = schedule.days.length;
 for (let i = schedule.days.length; i < DAYS; i++) {
-  schedule.days.push(generatedPairs(isoAddDays(LAUNCH_DATE, i)).flat());
+  schedule.days.push(generatedPairs(isoAddDays(schedule.start, i)).flat());
 }
 schedule.cities = CITIES.length;
 

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CITIES } from '../src/data/cities.js';
 import { LAUNCH_DATE } from '../src/lib/constants.js';
-import { isoAddDays } from '../src/lib/dates.js';
+import { daysBetween, isoAddDays } from '../src/lib/dates.js';
 import { kmBetween } from '../src/lib/geo.js';
 import { BANDS, generatedPairs, pairsFor, roundData } from '../src/lib/puzzles.js';
 
@@ -28,11 +28,11 @@ describe('puzzles', () => {
     }
   });
 
-  it('reads the committed schedule, which matches the generator', () => {
-    expect(schedule.start).toBe(LAUNCH_DATE);
+  it('reads the committed schedule, which covers launch day and matches the generator', () => {
+    expect(daysBetween(schedule.start, LAUNCH_DATE)).toBeGreaterThanOrEqual(0);
     expect(schedule.cities).toBe(CITIES.length);
     for (let i = 0; i < 30; i++) {
-      const iso = isoAddDays(LAUNCH_DATE, i);
+      const iso = isoAddDays(schedule.start, i);
       expect(pairsFor(iso, schedule)).toEqual(generatedPairs(iso));
     }
   });
