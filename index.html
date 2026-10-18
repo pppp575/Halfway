@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Halfway: the daily game about meeting in the middle</title>
+    <meta
+      name="description"
+      content="Two cities, one map. Tap the point exactly halfway between them along the shortest route, then watch the map fold into a globe. A free daily geography game."
+    />
+    <meta name="theme-color" content="#F2F5F9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F1A2E" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Halfway: the daily game about meeting in the middle" />
+    <meta property="og:description" content="Two cities, one map. Can you find the exact middle? It’s rarely where it looks." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!--site-meta-->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Halfway",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any",
+        "description": "A daily geography game: find the exact halfway point between two cities along the shortest route.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <div class="stripe" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">
+          <h1 class="wordmark">Halfway</h1>
+          <span class="issue" id="issue"></span>
+        </div>
+        <nav class="tools" aria-label="Game menu">
+          <button class="icon-btn" id="btnArchive" aria-label="Past puzzles" title="Past puzzles">
+            <svg viewBox="0 0 18 18" aria-hidden="true">
+              <rect x="2.2" y="3.4" width="13.6" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+              <path d="M2.2 7.4h13.6M6 1.8v3.2M12 1.8v3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnBoard" aria-label="Leaderboard" title="Leaderboard" hidden>
+            <svg viewBox="0 0 18 18" aria-hidden="true">
+              <path d="M5 2.5h8v3.2a4 4 0 0 1-8 0z" fill="currentColor" />
+              <path
+                d="M5 3.6H2.6v1.2A2.6 2.6 0 0 0 5.2 7.4M13 3.6h2.4v1.2a2.6 2.6 0 0 1-2.6 2.6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              />
+              <path d="M8.1 9.6h1.8v3H8.1zM5.6 13.2h6.8v2.3H5.6z" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnStats" aria-label="Your stats" title="Your stats">
+            <svg viewBox="0 0 18 18" aria-hidden="true">
+              <rect x="2" y="9" width="3" height="7" rx="1" fill="currentColor" />
+              <rect x="7.5" y="4" width="3" height="12" rx="1" fill="currentColor" />
+              <rect x="13" y="7" width="3" height="9" rx="1" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnSettings" aria-label="Settings" title="Settings">
+            <svg viewBox="0 0 18 18" aria-hidden="true">
+              <path
+                d="M9 6.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6zm6.4 3.9.1-1.1-.1-1.1 1.6-1.3-1.6-2.8-2 .7a6 6 0 0 0-1.9-1.1L11.2 1H7.8l-.3 2.1c-.7.3-1.3.6-1.9 1.1l-2-.7L2 6.3l1.6 1.3-.1 1.4.1 1.1L2 11.4l1.6 2.8 2-.7c.6.5 1.2.8 1.9 1.1l.3 2.1h3.4l.3-2.1c.7-.3 1.3-.6 1.9-1.1l2 .7 1.6-2.8z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <section id="play" hidden>
+          <div class="board">
+            <div class="board-top">
+              <span id="roundLabel"></span>
+              <span class="board-tags"
+                ><span class="tag" id="hardTag" hidden>Hard mode</span>
+                <ol class="pips" id="pips" aria-hidden="true"></ol
+              ></span>
+            </div>
+            <h2 class="sr" id="pairTitle"></h2>
+            <div class="board-rows">
+              <div>
+                <span class="dep-k">From</span>
+                <div class="flaps" id="flapA" aria-hidden="true"></div>
+                <span class="dep-c" id="countryA"></span>
+              </div>
+              <div>
+                <span class="dep-k">To</span>
+                <div class="flaps" id="flapB" aria-hidden="true"></div>
+                <span class="dep-c" id="countryB"></span>
+              </div>
+            </div>
+          </div>
+          <p class="instruction" id="instruction">
+            Tap the spot that’s halfway along the shortest route between them, the way a plane would fly.
+          </p>
+
+          <div class="map-wrap" id="mapWrap">
+            <svg
+              id="map"
+              tabindex="0"
+              role="application"
+              aria-label="World map. Tap to place your halfway pin, or use the arrow keys to move it and Enter to lock it in."
+            ></svg>
+            <div class="view-toggle" id="viewToggle" role="group" aria-label="Map view" hidden>
+              <button id="vFlat" aria-pressed="true">Flat map</button>
+              <button id="vGlobe" aria-pressed="false">Globe</button>
+            </div>
+            <p class="map-note" id="globeNote" hidden>Drag to spin the globe</p>
+            <div class="zoom-ctrl" id="zoomCtrl">
+              <button id="zIn" aria-label="Zoom in">+</button>
+              <button id="zOut" aria-label="Zoom out">−</button>
+              <button id="zReset" aria-label="Show the whole world">
+                <svg viewBox="0 0 18 18" width="17" height="17" aria-hidden="true">
+                  <circle cx="9" cy="9" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+                  <path
+                    d="M2.5 9h13M9 2.5c-2.6 3.6-2.6 9.4 0 13M9 2.5c2.6 3.6 2.6 9.4 0 13"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="actions" id="actions">
+            <p class="hint">Drag to move the map, pinch or scroll to zoom. Tap again to move your pin.</p>
+            <button class="primary" id="btnLock" disabled>Lock in my pin</button>
+          </div>
+
+          <section class="result" id="result" hidden aria-live="polite">
+            <p class="verdict"><strong id="rScore"></strong><span id="rOff"></span></p>
+            <p class="crowdline" id="rCrowd" hidden></p>
+            <p id="rPlace"></p>
+            <p class="insight" id="rInsight"></p>
+            <button class="primary" id="btnNext">Next round</button>
+          </section>
+          <div class="ad-slot" id="adRound" hidden></div>
+        </section>
+
+        <section class="done" id="done" hidden>
+          <div class="done-head">
+            <svg class="postmark" id="postmark" viewBox="0 0 332 200" role="img"></svg>
+            <div>
+              <h2 id="doneTitle"></h2>
+              <p class="squares" id="doneSquares" aria-hidden="true"></p>
+              <p class="rankline" id="doneRank" hidden></p>
+            </div>
+          </div>
+          <div class="done-actions">
+            <button class="primary" id="btnShare">Share my result</button>
+            <button class="secondary" id="btnShareCard">Save as image</button>
+            <button class="secondary" id="btnPractice">Play a practice game</button>
+            <button class="secondary" id="btnToday" hidden>Back to today’s puzzle</button>
+          </div>
+          <p class="status" id="shareStatus" aria-live="polite"></p>
+          <textarea class="share-box" id="shareBox" readonly hidden aria-label="Your result, ready to copy"></textarea>
+          <div class="done-grid">
+            <div>
+              <h3>Your rounds</h3>
+              <ol class="breakdown" id="breakdown"></ol>
+              <p class="next" id="nextIn"></p>
+            </div>
+            <div class="lb" id="lbInline" hidden></div>
+          </div>
+          <div class="ad-slot" id="adDone" hidden></div>
+        </section>
+
+        <div class="error" id="loadError" hidden></div>
+
+        <section class="about">
+          <h2>Why halfway is harder than it looks</h2>
+          <p>
+            On a flat map, a straight line between two cities looks like the shortest way to travel. It isn’t. The Earth is round, so the
+            shortest route is a curve called a great circle, and on most world maps it bows toward the nearest pole. That’s why long-haul
+            flights look curved on airport screens.
+          </p>
+          <p>
+            It also means the true middle is often nowhere near where your eye expects it. Halfway between London and Tokyo isn’t over Iran
+            or India. It’s in northern Siberia, close to the city of Norilsk.
+          </p>
+          <p>
+            Each day brings five new pairs of cities, the same for everyone. The first round is a short hop, and the last one usually
+            crosses an ocean. Every round is worth up to 100 points, based on how far your pin lands from the real halfway point compared
+            with the length of the route.
+          </p>
+        </section>
+        <footer class="foot">
+          <p>Map data from Natural Earth. A new Halfway starts at midnight, your local time.</p>
+          <p><a href="./privacy.html">Privacy</a></p>
+        </footer>
+      </main>
+    </div>
+
+    <dialog id="dlgHelp" aria-labelledby="helpTitle">
+      <h2 id="helpTitle">How to play</h2>
+      <p>You get two cities. Tap the map where you think the exact halfway point between them is, then lock in your pin.</p>
+      <p>
+        Halfway means halfway along the shortest route over the globe, the path a plane would fly. On a flat map those routes curve, so the
+        middle is often not where it looks. After each round the map folds into a globe so you can see why.
+      </p>
+      <p>Each round is worth up to 100 points. There are five rounds a day and everyone plays the same cities.</p>
+      <button class="primary" data-close>Start playing</button>
+    </dialog>
+
+    <dialog id="dlgStats" aria-labelledby="statsTitle">
+      <h2 id="statsTitle">Your stats</h2>
+      <div class="stats" id="statsGrid"></div>
+      <h3 class="dlg-sub">Achievements</h3>
+      <ul class="badges" id="badges"></ul>
+      <p id="statsNote" class="hint"></p>
+      <button class="primary" data-close>Close</button>
+    </dialog>
+
+    <dialog id="dlgBoard" aria-labelledby="boardTitle">
+      <h2 id="boardTitle">Leaderboard</h2>
+      <div class="lb" id="lbDialog"></div>
+      <button class="primary" data-close>Close</button>
+    </dialog>
+
+    <dialog id="dlgArchive" aria-labelledby="archiveTitle">
+      <h2 id="archiveTitle">Past puzzles</h2>
+      <p class="hint">Replay any earlier day. Archive scores count for your stats and badges, not for that day’s leaderboard.</p>
+      <ol class="archive" id="archiveList"></ol>
+      <button class="primary" data-close>Close</button>
+    </dialog>
+
+    <dialog id="dlgSettings" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">Settings</h2>
+      <div class="setting">
+        <div>
+          <b id="hardLabel">Hard mode</b>
+          <p class="hint">
+            The city dots stay hidden until you lock in, so you need to know where both cities are. Starts with the next round.
+          </p>
+        </div>
+        <button class="switch" id="setHard" role="switch" aria-checked="false" aria-labelledby="hardLabel"></button>
+      </div>
+      <div class="setting">
+        <div>
+          <b id="motionLabel">Map animations</b>
+          <p class="hint">The globe fold and the plane flight after each round.</p>
+        </div>
+        <button class="switch" id="setMotion" role="switch" aria-checked="true" aria-labelledby="motionLabel"></button>
+      </div>
+      <div class="setting">
+        <div><b id="themeLabel">Appearance</b></div>
+        <div class="seg" role="radiogroup" aria-labelledby="themeLabel" id="setTheme">
+          <button role="radio" data-theme-choice="system">System</button>
+          <button role="radio" data-theme-choice="light">Light</button>
+          <button role="radio" data-theme-choice="dark">Dark</button>
+        </div>
+      </div>
+      <div class="setting" id="callsignSetting" hidden>
+        <div>
+          <b>Callsign</b>
+          <p class="hint">How you appear on leaderboards. <span id="callsignNow"></span></p>
+        </div>
+        <button class="secondary small" id="btnRename">New callsign</button>
+      </div>
+      <div class="setting-links">
+        <button class="link" id="btnHowTo">How to play</button>
+        <a href="./privacy.html">Privacy</a>
+        <button class="link danger" id="btnDeleteData" hidden>Delete my leaderboard data</button>
+      </div>
+      <p class="hint version" id="version"></p>
+      <button class="primary" data-close>Done</button>
+    </dialog>
+
+    <dialog id="dlgJoin" aria-labelledby="joinTitle">
+      <h2 id="joinTitle">Join this league?</h2>
+      <p id="joinText"></p>
+      <div class="done-actions">
+        <button class="primary" id="btnJoinYes">Join league</button>
+        <button class="secondary" data-close>Not now</button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "halfway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Halfway: the daily geography game about meeting in the middle.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm run test",
+    "countries": "node scripts/build-countries.mjs",
+    "schedule": "node scripts/generate-schedule.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.117.2",
+    "d3-drag": "3.0.0",
+    "d3-ease": "3.0.1",
+    "d3-geo": "3.1.1",
+    "d3-interpolate": "3.0.1",
+    "d3-selection": "3.0.0",
+    "d3-timer": "3.0.1",
+    "d3-transition": "3.0.1",
+    "d3-zoom": "3.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.11.0",
+    "globals": "17.12.0",
+    "prettier": "3.9.8",
+    "topojson-client": "3.1.0",
+    "vite": "8.3.1",
+    "vitest": "4.1.9",
+    "world-atlas": "2.0.2"
+  }
+}

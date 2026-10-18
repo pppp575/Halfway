@@ -1,0 +1,74 @@
+# Builds the site and publishes it to GitHub Pages on every push to main.
+# Settings > Pages > Source must be set to "GitHub Actions".
+# Configure the build under Settings > Secrets and variables > Actions > Variables (see docs/DEPLOY.md).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: lts/*
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint, formatting and tests
+        run: npm run check
+      - name: Work out the site address
+        id: site
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+          REPO: ${{ github.event.repository.name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          owner="${OWNER,,}"
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            echo "base=/" >> "$GITHUB_OUTPUT"
+            echo "url=https://$CUSTOM_DOMAIN" >> "$GITHUB_OUTPUT"
+          elif [ "${REPO,,}" = "$owner.github.io" ]; then
+            echo "base=/" >> "$GITHUB_OUTPUT"
+            echo "url=https://$owner.github.io" >> "$GITHUB_OUTPUT"
+          else
+            echo "base=/$REPO/" >> "$GITHUB_OUTPUT"
+            echo "url=https://$owner.github.io/$REPO" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BASE: ${{ steps.site.outputs.base }}
+          VITE_SITE_URL: ${{ steps.site.outputs.url }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_ADSENSE_CLIENT: ${{ vars.VITE_ADSENSE_CLIENT }}
+          VITE_ADSENSE_SLOT_ROUND: ${{ vars.VITE_ADSENSE_SLOT_ROUND }}
+          VITE_ADSENSE_SLOT_DONE: ${{ vars.VITE_ADSENSE_SLOT_DONE }}
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: ./dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
