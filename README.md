@@ -8,7 +8,7 @@
 
 # Halfway
 
-A daily geography game I made. You get two cities and have to tap the spot exactly halfway between them, along the route a plane would actually fly.
+A daily geography game. You get two cities and have to tap the spot exactly halfway between them, along the route a plane would actually fly.
 
 Sounds easy. It isn't, because the Earth is round and flat maps lie. Halfway between London and Tokyo is up in northern Siberia, not over India where most people tap.
 
